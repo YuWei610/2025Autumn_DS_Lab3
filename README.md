@@ -55,14 +55,12 @@ kubectl get pods -n lab3
 kubectl logs -f deployment/client -n lab3
 ```
 
----
 
 ### **3.4 Rebuild and Deployment Workflow**
 
 This section summarizes all essential commands for rebuilding Docker images, updating configurations, and verifying Kubernetes deployments during the experiment.
 Each step includes English comments for quick reference when re-running the system or troubleshooting deployment issues.
 
----
 
 #### **Environment & Cluster Setup**
 
@@ -72,7 +70,6 @@ eval $(minikube docker-env)
 # (Allows building images directly inside Minikube's Docker daemon)
 ```
 
----
 
 #### **Build & Verify Images**
 
@@ -88,7 +85,6 @@ docker images
 # (Check that the newly built 'lab3-backend' and 'lab3-client' images have the latest CREATED time)
 ```
 
----
 
 #### **Clean Up Old Pods / Redeploy**
 
@@ -99,7 +95,6 @@ kubectl delete pod -l app=client -n lab3
 # (Ensure old pods are removed before using new Docker images)
 ```
 
----
 
 #### **Update Configurations**
 
@@ -110,7 +105,6 @@ kubectl apply -f k8s/client.yaml -n lab3
 # (Reapplies updated Deployment / ConfigMap / Environment settings)
 ```
 
----
 
 #### **Restart Deployments (After Config Update)**
 
@@ -121,7 +115,6 @@ kubectl rollout restart deployment/backend -n lab3
 # (Only restart the service whose configuration has changed)
 ```
 
----
 
 #### **Monitor Pods and Logs**
 
@@ -138,7 +131,6 @@ kubectl logs -f deployment/client -n lab3
 kubectl logs -f deployment/backend -n lab3
 ```
 
----
 
 #### **Log Capture for Chaos Experiment**
 
@@ -148,7 +140,6 @@ kubectl logs -f deployment/client -n lab3 | tee chaos_client.log
 # (Stores log output in a local file for visualization using c_observation.py)
 ```
 
----
 
 ## **4. Experiment Phases**
 
