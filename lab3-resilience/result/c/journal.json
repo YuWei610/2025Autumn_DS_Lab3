@@ -1,0 +1,180 @@
+{
+  "chaoslib-version": "1.44.0",
+  "platform": "macOS-15.6-arm64-arm-64bit",
+  "node": "linyuweideMacBook-Pro.local",
+  "experiment": {
+    "version": "1.0.0",
+    "title": "Kill Backend Pod Experiment (Extended Observation)",
+    "description": "Simulate backend failure by terminating the backend pod in the lab3 namespace, then observe system recovery for 40 seconds to visualize before/during/after states.",
+    "steady-state-hypothesis": {
+      "title": "Backend should be available before chaos",
+      "probes": [
+        {
+          "type": "probe",
+          "name": "backend_pod_ready",
+          "tolerance": true,
+          "provider": {
+            "type": "python",
+            "module": "chaosk8s.pod.probes",
+            "func": "pods_in_phase",
+            "arguments": {
+              "label_selector": "app=backend",
+              "ns": "lab3",
+              "phase": "Running"
+            }
+          }
+        }
+      ]
+    },
+    "method": [
+      {
+        "type": "action",
+        "name": "terminate_backend_pod",
+        "provider": {
+          "type": "python",
+          "module": "chaosk8s.pod.actions",
+          "func": "terminate_pods",
+          "arguments": {
+            "label_selector": "app=backend",
+            "ns": "lab3"
+          }
+        },
+        "pauses": {
+          "before": 5,
+          "after": 30
+        }
+      },
+      {
+        "type": "probe",
+        "name": "verify_backend_recovery",
+        "tolerance": true,
+        "provider": {
+          "type": "python",
+          "module": "chaosk8s.pod.probes",
+          "func": "pods_in_phase",
+          "arguments": {
+            "label_selector": "app=backend",
+            "ns": "lab3",
+            "phase": "Running"
+          }
+        }
+      }
+    ],
+    "dry": null
+  },
+  "start": "2025-11-07T15:05:46.679429+00:00",
+  "status": "completed",
+  "deviated": false,
+  "steady_states": {
+    "before": {
+      "steady_state_met": true,
+      "probes": [
+        {
+          "activity": {
+            "type": "probe",
+            "name": "backend_pod_ready",
+            "tolerance": true,
+            "provider": {
+              "type": "python",
+              "module": "chaosk8s.pod.probes",
+              "func": "pods_in_phase",
+              "arguments": {
+                "label_selector": "app=backend",
+                "ns": "lab3",
+                "phase": "Running"
+              }
+            }
+          },
+          "output": true,
+          "start": "2025-11-07T15:05:46.680051+00:00",
+          "status": "succeeded",
+          "end": "2025-11-07T15:05:46.694305+00:00",
+          "duration": 0.014254,
+          "tolerance_met": true
+        }
+      ]
+    },
+    "after": {
+      "steady_state_met": true,
+      "probes": [
+        {
+          "activity": {
+            "type": "probe",
+            "name": "backend_pod_ready",
+            "tolerance": true,
+            "provider": {
+              "type": "python",
+              "module": "chaosk8s.pod.probes",
+              "func": "pods_in_phase",
+              "arguments": {
+                "label_selector": "app=backend",
+                "ns": "lab3",
+                "phase": "Running"
+              }
+            }
+          },
+          "output": true,
+          "start": "2025-11-07T15:06:21.764626+00:00",
+          "status": "succeeded",
+          "end": "2025-11-07T15:06:21.777676+00:00",
+          "duration": 0.01305,
+          "tolerance_met": true
+        }
+      ]
+    },
+    "during": []
+  },
+  "run": [
+    {
+      "activity": {
+        "type": "action",
+        "name": "terminate_backend_pod",
+        "provider": {
+          "type": "python",
+          "module": "chaosk8s.pod.actions",
+          "func": "terminate_pods",
+          "arguments": {
+            "label_selector": "app=backend",
+            "ns": "lab3"
+          }
+        },
+        "pauses": {
+          "before": 5,
+          "after": 30
+        }
+      },
+      "output": [
+        "backend-869958bc8d-wlvb2"
+      ],
+      "start": "2025-11-07T15:05:51.700694+00:00",
+      "status": "succeeded",
+      "end": "2025-11-07T15:05:51.738665+00:00",
+      "duration": 0.037971
+    },
+    {
+      "activity": {
+        "type": "probe",
+        "name": "verify_backend_recovery",
+        "tolerance": true,
+        "provider": {
+          "type": "python",
+          "module": "chaosk8s.pod.probes",
+          "func": "pods_in_phase",
+          "arguments": {
+            "label_selector": "app=backend",
+            "ns": "lab3",
+            "phase": "Running"
+          }
+        }
+      },
+      "output": true,
+      "start": "2025-11-07T15:06:21.745485+00:00",
+      "status": "succeeded",
+      "end": "2025-11-07T15:06:21.764384+00:00",
+      "duration": 0.018899
+    }
+  ],
+  "rollbacks": [],
+  "end": "2025-11-07T15:06:21.777871+00:00",
+  "duration": 35.11848306655884
+}
