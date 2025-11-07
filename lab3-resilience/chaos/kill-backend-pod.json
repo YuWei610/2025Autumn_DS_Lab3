@@ -1,0 +1,49 @@
+{
+  "version": "1.0.0",
+  "title": "Kill one backend pod to simulate failure",
+  "description": "Delete a backend pod and observe client breaker and retry behavior",
+  "steady-state-hypothesis": {
+    "title": "Client remains responsive",
+    "probes": [
+      {
+        "name": "client-health",
+        "type": "probe",
+        "tolerance": true,
+        "provider": {
+          "type": "http",
+          "timeout": 3,
+          "verify_tls": false,
+          "url": "http://client.lab3.svc.cluster.local:8001/health"
+        }
+      }
+    ]
+  },
+  "method": [
+    {
+      "type": "action",
+      "name": "terminate-a-backend-pod",
+      "provider": {
+        "type": "python",
+        "module": "chaosk8s.pod.actions",
+        "func": "terminate_pods",
+        "arguments": {
+          "label_selector": "app=backend",
+          "ns": "lab3",
+          "rand": true
+        }
+      }
+    },
+    {
+      "type": "probe",
+      "name": "client-health-after",
+      "tolerance": true,
+      "provider": {
+        "type": "http",
+        "timeout": 3,
+        "verify_tls": false,
+        "url": "http://client.lab3.svc.cluster.local:8001/health"
+      }
+    }
+  ],
+  "rollbacks": []
+}

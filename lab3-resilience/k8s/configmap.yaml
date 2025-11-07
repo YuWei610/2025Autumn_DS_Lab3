@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: lab3-config
+  namespace: lab3
+data:
+  # --- Backend failure simulation ---
+  FAILURE_RATE: "0.7" # 70% failure rate to simulate instability
+  SLOW_RATE: "0.9" # 90% chance of delay
+  MAX_DELAY_MS: "3000" # Max delay = 3s
+
+  # --- Circuit Breaker configuration ---
+  CB_FAIL_MAX: "2" # Trigger OPEN after 2 consecutive failures
+  CB_RESET_TIMEOUT: "1" # Stay OPEN for 1s before HALF-OPEN test
+  CB_HALF_OPEN_MAX_CALLS: "1"
+
+  # --- Retry with Backoff + Jitter configuration ---
+  RETRY_ENABLED: "true" # Enable retry logic
+  RETRY_MAX_ATTEMPTS: "3" # Retry up to 3 times
+  RETRY_BASE: "0.2" # Base delay (seconds)
+  RETRY_MAX: "2.0" # Max backoff delay (seconds)
+  RETRY_EXP_FACTOR: "2" # Exponential multiplier
+  RETRY_JITTER: "true" # Randomize retry delay
+
+  # --- Backend endpoint ---
+  BACKEND_URL: "http://backend.lab3.svc.cluster.local:8000/work"
