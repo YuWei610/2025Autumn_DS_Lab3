@@ -179,7 +179,7 @@ kubectl logs -f deployment/client -n lab3 | tee chaos_client.log
 ---
 
 ## **6. Files Structure**
-
+```
 lab3-resilience/
 ├── backend_service/
 │   ├── main.py                # FastAPI backend with failure/latency simulation
@@ -228,7 +228,7 @@ lab3-resilience/
 │   └── README.md (optional)   # If you keep per-result notes here
 │
 └── README.md                  # Main report / how-to
-
+```
 
 ---
 
