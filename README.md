@@ -140,6 +140,7 @@ kubectl logs -f deployment/client -n lab3 | tee chaos_client.log
 # (Stores log output in a local file for visualization using c_observation.py)
 ```
 
+---
 
 ## **4. Experiment Phases**
 
@@ -177,15 +178,57 @@ kubectl logs -f deployment/client -n lab3 | tee chaos_client.log
 
 ---
 
-## **6. Key Files**
+## **6. Files Structure**
 
-| File                                 | Description                                           |
-| ------------------------------------ | ----------------------------------------------------- |
-| `backend_service/main.py`            | Backend endpoint with random delay/failure simulation |
-| `client_service/main.py`             | Client with Circuit Breaker and Retry logic           |
-| `client_service/a_baseline_main.py`  | Baseline client without resilience patterns           |
-| `chaos/kill-backend-pod.json`        | Chaos Toolkit experiment definition                   |
-| `result/b1`, `result/b2`, `result/c` | Logs and visualizations for each experiment phase     |
+lab3-resilience/
+├── backend_service/
+│   ├── main.py                # FastAPI backend with failure/latency simulation
+│   ├── requirements.txt       # Backend dependencies
+│   └── Dockerfile             # Backend container build
+│
+├── client_service/
+│   ├── main.py                # Client with Circuit Breaker + Retry + Backoff
+│   ├── a_baseline_main.py     # Baseline client (no resilience patterns)
+│   ├── requests.log           # Raw request/response log (client)
+│   ├── transitions.log        # Circuit breaker transition log (client)
+│   ├── requirements.txt       # Client dependencies
+│   └── Dockerfile             # Client container build
+│
+├── k8s/
+│   ├── backend.yaml           # Deployment/Service for backend
+│   ├── client.yaml            # Deployment/Service for client
+│   ├── configmap.yaml         # Shared config (envs, toggles, etc.)
+│   └── namespace.yaml         # Namespace "lab3"
+│
+├── result/
+│   ├── b1/                    # Part A/B1 – Baseline observation
+│   │   ├── b_1_observation.py # Script to parse/plot baseline
+│   │   ├── b_1.png            # Baseline plot (Figure A)
+│   │   ├── cb_states.log      # Parsed CB states (baseline run)
+│   │   ├── cb_transitions.log # Parsed CB transitions (baseline run)
+│   │   ├── client.log         # Client log used in B1 analysis
+│   │   └── outcome_rate.csv   # Aggregated success-rate (baseline)
+│   │
+│   ├── b2/                    # Part B2 – Resilience with CB + Retry
+│   │   ├── b2_1_RetryDelayTimeline.py # Script for retry delay timeline
+│   │   ├── b2_1.png           # Retry delay figure
+│   │   ├── b2_2_SuccessRatevsRetry.py # Script for success vs retry groups
+│   │   ├── b2_2.png           # Success vs retry figure (Figure B)
+│   │   ├── b2_observation.py  # B2 observation script
+│   │   ├── client.log         # Client log used in B2 analysis
+│   │   └── outcome_rate.csv   # Aggregated success-rate (B2)
+│   │
+│   ├── c/                     # Part C – Chaos experiment
+│   │   ├── c_observation.py   # Plot breaker timeline (Figure C)
+│   │   ├── c.png              # Figure C output
+│   │   ├── chaos_client.log   # Client log captured during chaos
+│   │   ├── chaostoolkit.log   # Chaos Toolkit CLI output
+│   │   └── journal.json       # Chaos Toolkit execution journal
+│   │
+│   └── README.md (optional)   # If you keep per-result notes here
+│
+└── README.md                  # Main report / how-to
+
 
 ---
 
